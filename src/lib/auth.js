@@ -1,13 +1,21 @@
-
 import User from '../models/User'
 
 export default async function requireAuth(user) {
 
-  if (!user || !user._id) throw new Error('Unathorized')
+  try {
+    printError('first of require auth')
   
-  const me = await User.findById(user._id)
-
-  if (!me || !me._id) throw new Error('Unauthorized')
+    if (!user || !user._id) throw new Error('Unathorized')
+    printError('first of require auth', user)
+    
+    const me = await User.findById(user._id)
+    printError('first of require auth', me)
   
-  return me
+    if (!me || !me._id) throw new Error('Unauthorized')
+    
+    return me
+  } catch (error) {
+    printError(error)
+    throw new Error('Unauthorized')
+  }
 }

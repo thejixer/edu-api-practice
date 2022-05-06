@@ -1,8 +1,8 @@
 
-import { writeFileSync, appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync } from 'fs'
+import { writeFileSync, existsSync, mkdirSync, readFileSync, readdirSync } from 'fs'
 import path from 'path'
-
 import jwt from 'jsonwebtoken'
+import Blog from './Blog'
 
 const userDirectory = path.join(process.cwd(), '/src/db/users')
 
@@ -31,6 +31,7 @@ class UserSchema {
         bio: '',
         blogs: [],
         avatar: '',
+        averageScore: 0,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       }
@@ -157,6 +158,38 @@ class UserSchema {
 
     writeFileSync(path.join(userDirectory, `${thisUser._id}/info.txt`), JSON.stringify(thisUser), "utf8")
 
+  }
+  
+  async calculateUserScore(userId) {
+    try {
+      const thisUser = deepClone(await this.findById(userId))
+
+      if (!thisUser || !thisUser._id) throw new Error('bad request: no such user exists')
+
+      const theseBlogs = await Blog.getBlogsByUserID(thisUser._id)
+
+      const userScore = (theseBlogs.reduce((acc, cur) => acc + cur.averageScore, 0) / theseBlogs.length);
+      
+      thisUser.averageScore = userScore
+
+      writeFileSync(path.join(userDirectory, `${thisUser._id}/info.txt`), JSON.stringify(thisUser), "utf8")
+
+      // return 'ok'
+    } catch (error) {
+      console.log(error)
+      // do nothing
+    }
+  }
+
+  async getTopUsers() {
+    try {
+      const theseUsers = deepClone(await this.findAll())
+
+      return theseUsers.sort((a, b) => b.averageScore - a.averageScore).slice(0, 3)
+
+    } catch (error) {
+      return []
+    }
   }
 }
 

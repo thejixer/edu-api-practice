@@ -126,6 +126,13 @@ const endpoints = [
     ],
     response: 'returns a user'
   },
+  // get top writers
+  {
+    endpoint: 'http://localhost:4000/user/top-users',
+    method: 'GET',
+    requiresAuth: false,
+    response: 'returns a list of top users based on their average score'
+  },
   // update avatar (upload image to server)
   {
     endpoint: 'http://localhost:4000/user/update-avatar',
@@ -215,7 +222,7 @@ const endpoints = [
   },
   // get a single blog by id
   {
-    endpoint: 'http://localhost:4000/blog/:_id',
+    endpoint: 'http://localhost:4000/blog/single-blog/:_id',
     method: 'GET',
     requiresAuth: false,
     possibleErrors: [
@@ -293,6 +300,13 @@ const endpoints = [
     response: {
       msg: 'ok'
     }
+  },
+  // top blogs
+  {
+    endpoint: 'http://localhost:4000/blog/top-blogs',
+    method: 'GET',
+    requiresAuth: false,
+    response: 'returns a list of top blogs based on their average score'
   },
   // ### Comment Section ###
   {

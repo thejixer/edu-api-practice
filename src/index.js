@@ -2,7 +2,6 @@ import express from 'express'
 import { existsSync, mkdirSync } from 'fs'
 import _applyRoutes from './router'
 import _applyMiddlewares from './lib/middlewares'
-
 import path from 'path'
 import './lib/global'
 

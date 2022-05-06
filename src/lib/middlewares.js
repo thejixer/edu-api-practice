@@ -3,15 +3,6 @@ import cors from 'cors'
 import path from 'path'
 import decodeToken from '../lib/decode-token'
 
-import cookieParser from 'cookie-parser'
-
-
-
-
-// const upload = multer({ dest: '/src/public' })
-
-
-
 export default app => {
 
   app.use(cors())
@@ -19,7 +10,6 @@ export default app => {
   app.use(express.urlencoded({
     extended: true
   }));
-  app.use(cookieParser())
 
   app.use(async (req, res, next) => {
     try {

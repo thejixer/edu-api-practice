@@ -134,6 +134,17 @@ class BlogSchema {
       throw error
     }
   }
+
+
+  async getTopBlogs() {
+    try {
+
+      return deepClone(await this.findAll()).sort((a, b) => b.averageScore - a.averageScore).slice(0, 3)
+
+    } catch (error) {
+      return []
+    }
+  }
 }
 
 const BlogModel = new BlogSchema()

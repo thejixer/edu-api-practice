@@ -1,11 +1,7 @@
 import express from 'express'
-
 import Blog from '../models/Blog'
-
 import AuthorizeUser from '../lib/auth'
 import User from '../models/User'
-
-// const removeScore = 
 
 const router = express.Router()
 
@@ -60,7 +56,7 @@ router.get('/my-blogs', async (req, res, next) => {
   }
 })
 
-router.get('/:_id', async (req, res, next) => {
+router.get('/single-blog/:_id', async (req, res, next) => {
 
   const thisBlog = deepClone(await Blog.findById(String(req.params._id)))
 
@@ -122,16 +118,29 @@ router.post('/submit-rate', async (req, res, next) => {
 
     const thisUser = await AuthorizeUser(req.user)
 
-    // const thisBlog = await Blog.findById(req.body.blogId)
-
     await Blog.rateBlog({
       blogId: req.body.blogId,
       userId: thisUser._id,
       score: req.body.score
     })
-
+    
+    await User.calculateUserScore(thisUser._id)
     return res.status(200).json({msg: 'ok'})
 
+  } catch (error) {
+    return res.status(500).json({ msg: error.message })
+  }
+})
+
+router.get('/top-blogs', async (req,res,next) => {
+  try {
+
+    const theseBlogs = deepClone(await Blog.getTopBlogs())
+
+    theseBlogs.forEach(item => delete item.scores)
+
+    return res.status(200).json(theseBlogs)
+    
   } catch (error) {
     return res.status(500).json({ msg: error.message })
   }

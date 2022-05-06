@@ -1,10 +1,8 @@
 
 
 import express from 'express'
-
 import User from '../models/User'
 import AuthorizeUser from '../lib/auth'
-
 import multer from 'multer'
 
 // const multer = require('multer')
@@ -163,6 +161,19 @@ router.get('/singleUser/:_id', async (req, res, next) => {
     
   } catch (error) {
     return res.status(500).json({msg: error.message})
+  }
+})
+
+router.get('/top-users', async (req,res,next) => {
+  try {
+    const theseUsers = deepClone(await User.getTopUsers())
+
+    theseUsers.forEach(user => delete user.blogs)
+
+    return res.status(200).json(theseUsers)
+    
+  } catch (error) {
+    return res.status(500).json({ msg: error.message })
   }
 })
 
