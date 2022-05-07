@@ -26,18 +26,22 @@ router.post('/write', async (req, res, next) => {
 })
 
 router.get('/', async (req, res) => {
-  const users = await User.findAll()
-  const obj = {}
-  users.forEach(user => obj[user._id] = user)
-  const blogs = deepClone(await Blog.findAll())
-  blogs.forEach(blog => {
-    blog.creator = obj[blog.creatorId]
-    delete blog.scores
-  })
-
-
-
-  res.json(blogs)
+  try {
+    const users = await User.findAll()
+    const obj = {}
+    users.forEach(user => obj[user._id] = user)
+    const blogs = deepClone(await Blog.findAll())
+    blogs.forEach(blog => {
+      blog.creator = obj[blog.creatorId]
+      delete blog.scores
+    })
+  
+  
+  
+    return res.json(blogs)
+  } catch (error) {
+    return res.status(500).json({msg: error.message})
+  }
 })
 
 router.get('/my-blogs', async (req, res, next) => {
@@ -58,16 +62,20 @@ router.get('/my-blogs', async (req, res, next) => {
 
 router.get('/single-blog/:_id', async (req, res, next) => {
 
-  const thisBlog = deepClone(await Blog.findById(String(req.params._id)))
+  try {
+    const thisBlog = deepClone(await Blog.findById(String(req.params._id)))
 
-  if (!thisBlog) return res.status(500).json({ msg: 'bad request: no such blog exists' })
-
-  const thisUser = await User.findById(thisBlog.creatorId)
-
-  thisBlog.creator = thisUser
-  delete thisBlog.scores
-
-  return res.json(thisBlog)
+    if (!thisBlog) return res.status(500).json({ msg: 'bad request: no such blog exists' })
+  
+    const thisUser = await User.findById(thisBlog.creatorId)
+  
+    thisBlog.creator = thisUser
+    delete thisBlog.scores
+  
+    return res.json(thisBlog)
+  } catch (error) {
+    return res.status(500).json({msg: error.message})
+  }
 })
 
 router.post('/by-user', async (req, res, next) => {

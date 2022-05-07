@@ -87,7 +87,7 @@ const endpoints = [
       name: String,
       bio: {
         type: String,
-        matLength: 200
+        maxLength: 200
       }
     },
     requiresAuth: true,
