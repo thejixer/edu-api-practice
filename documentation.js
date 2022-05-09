@@ -1,8 +1,4 @@
 
-class User {
-
-}
-
 const endpoints = [
   // ### User Section ###
   // sign up
@@ -34,6 +30,7 @@ const endpoints = [
   // login
   {
     endpoint: 'http://localhost:4000/user/login',
+    method: 'POST',
     body: {
       username: String,
       password: String
@@ -63,6 +60,7 @@ const endpoints = [
   // me
   {
     endpoint: 'http://localhost:4000/user/me',
+    method: 'POST',
     body: {},
     requiresAuth: true,
     possibleErrors: [
