@@ -1,6 +1,7 @@
 import express from 'express'
 import Comment from '../models/Comment'
 import Blog from '../models/Blog'
+import User from '../models/User'
 import AuthorizeUser from '../lib/auth'
 
 const router = express.Router()
@@ -37,9 +38,14 @@ router.get('/by-blog/:blogId', async (req, res, next) => {
     if (!thisBlog || !thisBlog._id) throw new Error('bad request: no such blog exists')
 
     const theseComments = deepClone(await Comment.getBlogComments(thisBlog._id))
+    const allUsers = await User.findAll()
+    const userCache = {}
 
-    theseComments.forEach(item => {
+    allUsers.forEach(user => userCache[user._id] = user)
+
+    theseComments.forEach((item, i) => {
       delete item.blogId
+      theseComments[i].user = userCache[item.userId]
     })
 
     return res.status(200).json(theseComments)
