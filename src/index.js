@@ -6,9 +6,14 @@ import path from 'path'
 import './lib/global'
 
 const dbDirectory = path.join(process.cwd(), '/src/db')
+const publicDirectory = path.join(process.cwd(), '/src/public')
 
 if (!existsSync(dbDirectory)) {
   mkdirSync(dbDirectory)
+}
+
+if (!existsSync(publicDirectory)) {
+  mkdirSync(publicDirectory)
 }
 
 const app = express()
