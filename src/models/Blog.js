@@ -12,10 +12,10 @@ class BlogSchema {
     this.doesCacheneedsUpdate = true
   }
 
-  async create({ title, content, creatorId, imgurl }) {
+  async create({ title, content, creatorId, imgurl, category, hashtags }) {
     try {
 
-      if (!title || !content || !creatorId || !imgurl) throw new Error('bad input')
+      if (!title || !content || !creatorId || !imgurl || !category) throw new Error('bad input')
       
       const thisBlog = {
         _id: `btb-${UID()}`,
@@ -25,6 +25,8 @@ class BlogSchema {
         imgurl,
         averageScore: 0,
         scores: {},
+        category,
+        hashtags,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       }

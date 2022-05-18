@@ -111,13 +111,15 @@ router.post('/edit', async (req, res, next) => {
     if (
       !req.body.name ||
       !req.body.bio ||
+      !req.body.bioLength ||
       typeof req.body.bio !== 'string' ||
       req.body.bio.length > 200
     ) throw new Error('bad input')
 
     const realData = {
       name: req.body.name,
-      bio: req.body.bio
+      bio: req.body.bio,
+      bioLength: req.body.bioLength
     }
 
     await User.findByIdAndUpdate(thisUser._id, realData)

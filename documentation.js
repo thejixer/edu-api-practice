@@ -83,10 +83,8 @@ const endpoints = [
     method: 'POST',
     body: {
       name: String,
-      bio: {
-        type: String,
-        maxLength: 200
-      }
+      bio: String, // maxLength: 200
+      bioLength: Number,
     },
     requiresAuth: true,
     possibleErrors: [
@@ -183,7 +181,9 @@ const endpoints = [
     body: {
       title: String,
       content: String, // a string in form of html which is the output of wysiwyg, example ==> '<div><h1> hello i am a blog </h1></div>'
-      imgurl: String // this is the main picture of the article which u display in lists
+      imgurl: String, // this is the main picture of the article which u display in lists
+      cat : String, //chose a category
+      hashtags : [String], // An array of hashtags (Optional)
     },
     requiresAuth: true,
     possibleErrors: [
@@ -258,7 +258,9 @@ const endpoints = [
       data: {
         title: String,
         content: String,
-        imgurl: String
+        imgurl: String,
+        cat : String, //chose a category
+        hashtags : [String], // An array of hashtags (Optional)
       }
     },
     possibleErrors: [

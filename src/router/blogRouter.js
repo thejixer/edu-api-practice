@@ -9,7 +9,7 @@ router.post('/write', async (req, res, next) => {
 
   try {
 
-    if (!req.body.title || !req.body.content || !req.body.imgurl) return res.status(522).json({ msg: 'bad request: bad inputs' })
+    if (!req.body.title || !req.body.content || !req.body.imgurl || !req.body.category) return res.status(522).json({ msg: 'bad request: bad inputs' })
 
     const thisUser = await AuthorizeUser(req.user)
 
@@ -104,7 +104,9 @@ router.post('/edit', async (req, res, next) => {
     const realData = {
       title: req.body.data.title,
       content: req.body.data.content,
-      imgurl: req.body.data.imgurl
+      imgurl: req.body.data.imgurl,
+      category: req.body.data.category,
+      hashtags: req.body.data.hashtags
     }
     
     const thisUser = await AuthorizeUser(req.user)
