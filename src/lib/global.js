@@ -5,7 +5,13 @@ global.printError = (...args) => {
   console.log("\x1b[0m")
 }
 
-global.deepClone = obj => JSON.parse(JSON.stringify(obj))
+global.deepClone = obj => {
+  try {
+    return JSON.parse(JSON.stringify(obj))
+  } catch (error) {
+    throw error
+  }
+}
 
 global.UID = () => `${new Date().getTime()}${String(Math.random()).slice(3, 9)}`
 
