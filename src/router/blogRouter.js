@@ -165,6 +165,8 @@ router.post(`/delete`, async (req, res, next) => {
     if(thisBlog.creatorId !== thisUser._id) throw new Error("unauthorized")
     
     Blog.deleteBlog(x)
+    
+    User.deleteBlogUser(thisUser._id, x)
 
     return res.status(200).json({ msg: "ok" })
 
