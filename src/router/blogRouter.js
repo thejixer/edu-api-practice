@@ -154,6 +154,25 @@ router.get('/top-blogs', async (req,res,next) => {
   }
 })
 
+router.post(`/delete`, async (req, res, next) => {
+  try {
+    const x = req.body.blogId 
+    if (!x) throw new Error("bad request: bad inputs")
+    const thisUser = await AuthorizeUser(req.user)
+
+    const thisBlog = deepClone(await Blog.findById(String(x)))
+
+    if(thisBlog.creatorId !== thisUser._id) throw new Error("unauthorized")
+    
+    Blog.deleteBlog(x)
+
+    return res.status(200).json({ msg: "ok" })
+
+  } catch (error) {
+    return res.status(500).json({ msg: error.message })
+  }
+})
+
 export default router
 
 

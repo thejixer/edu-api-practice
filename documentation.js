@@ -272,6 +272,28 @@ const endpoints = [
       }
     ]
   },
+  // delete a blog
+  {
+    endpoint: 'http://localhost:4000/blog/delete',
+    method: 'POST',
+    requiresAuth: true,
+
+    body: {
+      blogId: String, // the id of the blog u want to delete
+    },
+    possibleErrors: [
+      {
+        error: 'bad request: bad inputs',
+        reason: 'you probably forgot to give the required params or misspeled something'
+      },
+      {
+        error: 'unathorized',
+        reason: 'u probably forgot to send the headers in the correct format'
+      }
+    ],
+    response: {msg: "ok"}
+  },
+
   // rate a blog
   {
     endpoint: 'http://localhost:4000/blog/submit-rate',
