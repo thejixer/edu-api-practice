@@ -191,7 +191,20 @@ class UserSchema {
       return []
     }
   }
+
+  async deleteBlogUser(_id, blogId) {
+    const thisUser = await this.findById(_id)
+  
+    const index = thisUser.blogs.findIndex(blog => blog._id === blogId)
+    
+    thisUser.blogs.splice(index, 1)
+  
+    writeFileSync(path.join(userDirectory, `${thisUser._id}/info.txt`), JSON.stringify(thisUser), "utf8")
+  
+  }
 }
+
+
 
 const UserModel = new UserSchema()
 
