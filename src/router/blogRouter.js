@@ -25,14 +25,18 @@ router.post('/write', async (req, res, next) => {
 
 })
 
+//*
 router.get('/', async (req, res) => {
   try {
     const users = await User.findAll()
     const obj = {}
     users.forEach(user => obj[user._id] = user)
     const blogs = deepClone(await Blog.findAll())
+
     blogs.forEach(blog => {
       blog.creator = obj[blog.creatorId]
+      blog.rateCount = Object.entries(blog.scores).reduce(acc => acc + 1, 0)
+      
       delete blog.scores
     })
   
@@ -43,7 +47,7 @@ router.get('/', async (req, res) => {
     return res.status(500).json({msg: error.message})
   }
 })
-
+//*
 router.get('/my-blogs', async (req, res, next) => {
 
   try {
@@ -51,7 +55,10 @@ router.get('/my-blogs', async (req, res, next) => {
 
     const theseBlogs = deepClone(await Blog.getBlogsByUserID(thisUser._id))
 
-    theseBlogs.forEach(item => delete item.scores)
+    theseBlogs.forEach(item => {
+      item.rateCount = Object.entries(item.scores).reduce(acc => acc + 1, 0)
+      delete item.scores
+    })
 
     return res.json(theseBlogs)
 
@@ -59,7 +66,7 @@ router.get('/my-blogs', async (req, res, next) => {
     return res.status(500).json({ msg: error.message })
   }
 })
-
+//*
 router.get('/single-blog/:_id', async (req, res, next) => {
 
   try {
@@ -70,6 +77,10 @@ router.get('/single-blog/:_id', async (req, res, next) => {
     const thisUser = await User.findById(thisBlog.creatorId)
   
     thisBlog.creator = thisUser
+    thisBlog.rateCount = Object.entries(thisBlog.scores).reduce(acc => acc + 1, 0)
+    
+
+
     delete thisBlog.scores
   
     return res.json(thisBlog)
@@ -77,7 +88,7 @@ router.get('/single-blog/:_id', async (req, res, next) => {
     return res.status(500).json({msg: error.message})
   }
 })
-
+//*
 router.post('/by-user', async (req, res, next) => {
   try {
 
@@ -87,7 +98,10 @@ router.post('/by-user', async (req, res, next) => {
     
     const theseBlogs = deepClone(await Blog.getBlogsByUserID(thisUser._id))
 
-    theseBlogs.forEach(item => delete item.scores)
+    theseBlogs.forEach(item => {
+      item.rateCount = Object.entries(item.scores).reduce(acc => acc + 1, 0)
+      delete item.scores
+    })
     
     return res.status(200).json(theseBlogs)
     
@@ -126,26 +140,31 @@ router.post('/submit-rate', async (req, res, next) => {
 
     const thisUser = await AuthorizeUser(req.user)
 
+    const thisBlog = await Blog.findById(req.body.blogId)
+
     await Blog.rateBlog({
       blogId: req.body.blogId,
       userId: thisUser._id,
       score: req.body.score
     })
     
-    await User.calculateUserScore(thisUser._id)
+    await User.calculateUserScore(thisBlog.creatorId)
     return res.status(200).json({msg: 'ok'})
 
   } catch (error) {
     return res.status(500).json({ msg: error.message })
   }
 })
-
+//*
 router.get('/top-blogs', async (req,res,next) => {
   try {
 
     const theseBlogs = deepClone(await Blog.getTopBlogs())
 
-    theseBlogs.forEach(item => delete item.scores)
+    theseBlogs.forEach(item => {
+      item.rateCount = Object.entries(item.scores).reduce(acc => acc + 1, 0)
+      delete item.scores
+    })
 
     return res.status(200).json(theseBlogs)
     
@@ -157,6 +176,7 @@ router.get('/top-blogs', async (req,res,next) => {
 router.post(`/delete`, async (req, res, next) => {
   try {
     const x = req.body.blogId 
+
     if (!x) throw new Error("bad request: bad inputs")
     const thisUser = await AuthorizeUser(req.user)
 
@@ -166,7 +186,7 @@ router.post(`/delete`, async (req, res, next) => {
     
     Blog.deleteBlog(x)
     
-    User.deleteBlogUser(thisUser._id, x)
+    await User.deleteBlogUser(thisUser._id, x)
 
     return res.status(200).json({ msg: "ok" })
 

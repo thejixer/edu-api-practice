@@ -115,8 +115,6 @@ class BlogSchema {
 
       if (!thisBlog || !thisBlog._id) throw new Error('bad request: no such blog exists')
 
-      console.log(thisBlog)
-
       thisBlog.scores[userId] = score
       const arr = Object.entries(thisBlog.scores)
       const averageScore = arr.reduce((acc, [_, value]) => {

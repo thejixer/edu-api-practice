@@ -168,8 +168,20 @@ class UserSchema {
 
       const theseBlogs = await Blog.getBlogsByUserID(thisUser._id)
 
-      const userScore = (theseBlogs.reduce((acc, cur) => acc + cur.averageScore, 0) / theseBlogs.length);
+      console.log('theseBlogs.length : ', theseBlogs.length)
+      const userScore = (theseBlogs.reduce((acc, cur) => {
+
+        print('cur : ', cur)
+
+        if (isNaN(cur.averageScore)) return acc
+
+        return acc + cur.averageScore
+      }, 0) / theseBlogs.length);
       
+      print('########################################')
+      print('########################################')
+      print('########################################')
+      print(userScore)
       thisUser.averageScore = userScore
 
       writeFileSync(path.join(userDirectory, `${thisUser._id}/info.txt`), JSON.stringify(thisUser), "utf8")
@@ -193,9 +205,9 @@ class UserSchema {
   }
 
   async deleteBlogUser(_id, blogId) {
-    const thisUser = await this.findById(_id)
+    const thisUser = deepClone(await this.findById(_id))
   
-    const index = thisUser.blogs.findIndex(blog => blog._id === blogId)
+    const index = thisUser.blogs.findIndex(blog => blog === blogId)
     
     thisUser.blogs.splice(index, 1)
   
