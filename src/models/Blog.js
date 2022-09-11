@@ -122,6 +122,7 @@ class BlogSchema {
       const averageScore = arr.reduce((acc, [_, value]) => {
         return acc + value
       }, 0) / arr.length
+      
       thisBlog.averageScore = averageScore
 
       writeFileSync(path.join(blogDirectoy, `${thisBlog._id}.txt`), JSON.stringify(thisBlog), "utf8")

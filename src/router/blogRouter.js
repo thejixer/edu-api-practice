@@ -133,14 +133,15 @@ router.post('/submit-rate', async (req, res, next) => {
     })
     
     await User.calculateUserScore(thisUser._id)
-    return res.status(200).json({msg: 'ok'})
-
+    return res.status(200).json({ msg: 'ok' })
+    
   } catch (error) {
     return res.status(500).json({ msg: error.message })
   }
 })
 
-router.get('/top-blogs', async (req,res,next) => {
+router.get('/top-blogs', async (req, res, next) => {
+  
   try {
 
     const theseBlogs = deepClone(await Blog.getTopBlogs())

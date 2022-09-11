@@ -174,6 +174,7 @@ class UserSchema {
 
       writeFileSync(path.join(userDirectory, `${thisUser._id}/info.txt`), JSON.stringify(thisUser), "utf8")
 
+      this.doesCacheneedsUpdate = true
       // return 'ok'
     } catch (error) {
       console.log(error)
