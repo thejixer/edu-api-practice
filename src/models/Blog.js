@@ -1,6 +1,6 @@
 
 
-import { writeFileSync, readdirSync, existsSync, mkdirSync, readFileSync } from 'fs'
+import { writeFileSync, readdirSync, existsSync, mkdirSync, readFileSync, unlinkSync } from 'fs'
 import path from 'path'
 
 const blogDirectoy = path.join(process.cwd(), '/src/db/blogs')
@@ -115,8 +115,6 @@ class BlogSchema {
 
       if (!thisBlog || !thisBlog._id) throw new Error('bad request: no such blog exists')
 
-      console.log(thisBlog)
-
       thisBlog.scores[userId] = score
       const arr = Object.entries(thisBlog.scores)
       const averageScore = arr.reduce((acc, [_, value]) => {
@@ -144,6 +142,15 @@ class BlogSchema {
 
     } catch (error) {
       return []
+    }
+  }
+
+  deleteBlog(blogId) {
+    try {
+      unlinkSync(path.join(blogDirectoy, `${blogId}.txt`))
+      this.doesCacheneedsUpdate = true
+    } catch (error) {
+      throw error
     }
   }
 }
