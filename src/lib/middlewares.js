@@ -12,6 +12,7 @@ export default app => {
   }));
 
   app.use(async (req, res, next) => {
+    
     try {
 
       const token = req.headers.auth || req.cookies.auth;

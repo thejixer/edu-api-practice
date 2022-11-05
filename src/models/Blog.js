@@ -2,6 +2,7 @@
 
 import { writeFileSync, readdirSync, existsSync, mkdirSync, readFileSync, unlinkSync } from 'fs'
 import path from 'path'
+import UserModel from './User'
 
 const blogDirectoy = path.join(process.cwd(), '/src/db/blogs')
 
@@ -125,6 +126,7 @@ class BlogSchema {
 
       writeFileSync(path.join(blogDirectoy, `${thisBlog._id}.txt`), JSON.stringify(thisBlog), "utf8")
       this.doesCacheneedsUpdate = true
+      UserModel.doesCacheneedsUpdate = true
 
       return 'ok'
 
