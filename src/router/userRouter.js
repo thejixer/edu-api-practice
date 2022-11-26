@@ -10,9 +10,6 @@ import multer from 'multer'
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
 
-    console.log('reaches here')
-    console.log('req.user : ', req.user)
-
     if (!req.user || !req.user._id) return
 
     cb(null, './src/public')
@@ -23,7 +20,9 @@ const storage = multer.diskStorage({
 
     const howdidyou = arr[arr.length - 1]
 
-    const fileName = `ava-${req.user._id}.${howdidyou}`
+    const rand = `${new Date().getTime()}${String(Math.random()).slice(3,9)}`
+
+    const fileName = `ava-${rand}.${howdidyou}`
 
     req.fileName = fileName
 
