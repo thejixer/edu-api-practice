@@ -49,7 +49,6 @@ class UserSchema {
       writeFileSync(path.join(thisUserDirectory, 'info.txt'), JSON.stringify(thisUser), "utf8")
       this.doesCacheneedsUpdate = true
 
-      console.log('hmmm')
       return this.createToken(thisUser._id)
 
     } catch (error) {
@@ -76,7 +75,6 @@ class UserSchema {
       return result
 
     } catch (error) {
-      console.log('error in find all')
       console.log(error)
       return []
     }
@@ -168,20 +166,13 @@ class UserSchema {
 
       const theseBlogs = await Blog.getBlogsByUserID(thisUser._id)
 
-      console.log('theseBlogs.length : ', theseBlogs.length)
       const userScore = (theseBlogs.reduce((acc, cur) => {
 
-        print('cur : ', cur)
-
-        if (isNaN(cur.averageScore)) return acc
+      if (isNaN(cur.averageScore)) return acc
 
         return acc + cur.averageScore
       }, 0) / theseBlogs.length);
-      
-      print('########################################')
-      print('########################################')
-      print('########################################')
-      print(userScore)
+
       thisUser.averageScore = userScore
 
       writeFileSync(path.join(userDirectory, `${thisUser._id}/info.txt`), JSON.stringify(thisUser), "utf8")
